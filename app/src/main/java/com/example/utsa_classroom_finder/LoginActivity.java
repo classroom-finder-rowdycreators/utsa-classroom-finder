@@ -8,54 +8,81 @@ import android.widget.EditText;
 
 import androidx.activity.ComponentActivity;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.res.AssetManager;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class LoginActivity extends ComponentActivity {
-    //AssetManager assets;
-    private Button login_button;
+    private AssetManager assetManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //assets = getAssets();
+        assetManager = getAssets();
         setupButtons();
     }
 
+    private List<String> readLinesFromAssets(String fileName) {
+        List<String> lines = new ArrayList<>();
 
-    private int authenticate( String username, String password ) {
-        Scanner scan;
-        String str = "";
-        String[] arr;
-        int id =-1;
-        boolean authenticated = false;
-        File f = new File(getFilesDir().getAbsolutePath()+ "/login.txt");
-        try {
-            if(f.exists()) {
-                scan = new Scanner(openFileInput("login.txt"));
+        try (InputStream is = assetManager.open(fileName);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
-                while (scan.hasNext()) {
-                    str = scan.nextLine();
-                    arr = str.split(",");
-                    if (username.equalsIgnoreCase(arr[1]) && password.equals(arr[2])) {
-                        id = Integer.parseInt(arr[0]);
-                        return id;
-                    }
-                }
-                scan.close();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);  // Add each line to the list
             }
-        } catch (IOException e) {
+
+        }
+        catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
+
+            return null;
         }
 
-        return id;
+        return lines;  // Return the list of lines
+    }
+
+    private int authenticate( String username, String password ) {
+
+        List<String> readLines; // list of lines read from a file
+        String line;
+        String[] splitLine;
+
+        int id = -1; // user login id
+
+        // Read Lines from login.txt:
+        readLines = readLinesFromAssets("login.txt");
+        assert readLines != null;
+
+        // Find Login:
+        for(int i=0; i < readLines.size(); i++)
+        {
+            line = readLines.get(i); // get line from read lines
+
+            splitLine = line.split(","); // split line by comma
+
+            if (username.equalsIgnoreCase(splitLine[1]) && password.equals(splitLine[2])) {
+                id = Integer.parseInt(splitLine[0]);
+                return id; // return the id of the found login
+            }
+
+        }
+
+        return id; // returns -1 if login not found
+
+
     }
 
     private void setupButtons(){
-        login_button = (Button) findViewById(R.id.login_button);
+        Button login_button = (Button) findViewById(R.id.login_button);
         Button registerButton =(Button)findViewById(R.id.registerButton);
 
         login_button.setOnClickListener(new View.OnClickListener() {
