@@ -10,9 +10,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.utsa_classroom_finder.model.LocationMap;
 import com.example.utsa_classroom_finder.model.checkLogin;
 
 public class MainActivity extends AppCompatActivity {
+
+    //hashmap
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,30 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
             );
+
+
+            //8 buttons to go to next screen
+            Button MH, NPB, MS, BB, MB, JPL, FLN, ART;
+
+            LocationMap map = new LocationMap();
+
+            MH = findViewById(R.id.back);
+            MH.setOnClickListener(
+                    e -> {
+                        //send intent tezxt to mapview with location name equal to MH
+                        String locationName = "MH";
+                        checkLogin.setLoggedIn(this, false);
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        startActivity(intent);
+
+                    }
+            );
+
+
+
+
         }
     }
+
+
 }
