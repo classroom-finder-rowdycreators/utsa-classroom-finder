@@ -22,13 +22,17 @@
         android:id="@+id/login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="220dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="466dp"
         android:text="@string/login_title"
         android:textColor="@color/black"
         android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/login_username"
@@ -92,11 +96,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@drawable/button_background"
+        android:padding="16dp"
         android:text="@string/Register"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button"
-        android:background="@drawable/button_background"
-        android:textColor="@color/white"
-        android:padding="16dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/login_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
