@@ -3,6 +3,7 @@ package com.example.utsa_classroom_finder;
 import static androidx.core.location.LocationManagerCompat.getCurrentLocation;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,18 @@ import android.content.Context;
 
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.example.utsa_classroom_finder.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,9 +40,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Mapview extends AppCompatActivity {
 
@@ -55,9 +71,11 @@ public class Mapview extends AppCompatActivity {
 
         // Center the map on the retrieved coordinates
         org.osmdroid.api.IMapController mapController = map.getController();
+        mapController.setZoom(17);  // Zoom level; adjust as necessary
+        mapController.setCenter(new org.osmdroid.util.GeoPoint(29.5837859, -98.6267082));  // Latitude and Longitude
+        fetchDirections("29.5856387,-98.6193095", "29.5842083, -98.6180271");
         mapController.setZoom(17); // Adjust zoom level as needed
         mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
-
         map.setMultiTouchControls(true);
     }
 
@@ -106,4 +124,82 @@ public class Mapview extends AppCompatActivity {
         }
     }
 
+
+    private void fetchDirections(String origin, String destination) {
+        String apiKey = ""; // Replace with your Google API Key
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&key=" + apiKey;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    parseDirections(response);
+                },
+                error -> {
+                    // Log the error
+                    Log.e("Volley Error", error.toString());
+
+                    // Show a Toast message to the user
+                    Toast.makeText(getApplicationContext(), "Error fetching directions. Please try again.", Toast.LENGTH_LONG).show();
+                });
+
+        queue.add(stringRequest);
+    }
+
+    private void parseDirections(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray routes = jsonObject.getJSONArray("routes");
+            if (routes.length() > 0) {
+                JSONObject route = routes.getJSONObject(0);
+                String polyline = route.getJSONObject("overview_polyline").getString("points");
+                drawPolyline(polyline);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private List<GeoPoint> decodePolyline(String encoded) {
+        List<GeoPoint> poly = new ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result >> 1) ^ -(result & 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result >> 1) ^ -(result & 1));
+            lng += dlng;
+
+            GeoPoint p = new GeoPoint((double) (lat / 1E5), (double) (lng / 1E5));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+    private void drawPolyline(String encoded) {
+        List<GeoPoint> points = decodePolyline(encoded);
+        Polyline polyline = new Polyline();
+        polyline.setPoints(points);
+        polyline.setColor(Color.BLUE);
+        polyline.setWidth(5f);
+        map.getOverlayManager().add(polyline);
+        map.invalidate();
+    }
+
+
 }
+
+
