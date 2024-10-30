@@ -1,6 +1,8 @@
 package com.example.utsa_classroom_finder;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,21 +10,23 @@ import android.widget.EditText;
 
 import androidx.activity.ComponentActivity;
 
+import com.example.utsa_classroom_finder.model.checkLogin;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.res.AssetManager;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 public class LoginActivity extends ComponentActivity {
     private AssetManager assetManager;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_login);
 
         assetManager = getAssets();
@@ -82,17 +86,18 @@ public class LoginActivity extends ComponentActivity {
     }
 
     private void setupButtons(){
-        Button login_button = (Button) findViewById(R.id.login_button);
-        Button registerButton =(Button)findViewById(R.id.registerButton);
+        Button login_button = findViewById(R.id.login_button);
+        Button registerButton = findViewById(R.id.registerButton);
 
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText uText = (EditText) findViewById(R.id.login_username_input);
-                EditText pText = (EditText) findViewById(R.id.login_password_input);
+                EditText uText = findViewById(R.id.login_username_input);
+                EditText pText = findViewById(R.id.login_password_input);
                 int id = authenticate(uText.getText().toString(), pText.getText().toString());
                 if( id > 0 ){
-                    Intent intent = new Intent( LoginActivity.this, Mapview.class);
+                    checkLogin.setLoggedIn(context, true);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("id",id);
                     startActivity(intent);
                 }
@@ -106,13 +111,13 @@ public class LoginActivity extends ComponentActivity {
             }
         });
 
-//        registerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
 

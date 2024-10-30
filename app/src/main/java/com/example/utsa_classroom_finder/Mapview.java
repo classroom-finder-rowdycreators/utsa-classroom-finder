@@ -1,7 +1,10 @@
 package com.example.utsa_classroom_finder;
 
+import static androidx.core.location.LocationManagerCompat.getCurrentLocation;
+
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -29,6 +32,12 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.example.utsa_classroom_finder.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -43,41 +52,33 @@ public class Mapview extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
 
+
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Load configuration and initialize the map
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
-        // Inflate and create the map
         setContentView(R.layout.activity_mapview);
-
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
-        // Check for permissions depending on Android version
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            requestPermissionsIfNecessary(new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            });
-        }
+        // Retrieve latitude and longitude from the intent
+        double latitude = getIntent().getDoubleExtra("latitude", 0.0);
+        double longitude = getIntent().getDoubleExtra("longitude", 0.0);
 
-        // Adjust layout for edge-to-edge display
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        // Center the map at the specific coordinates and zoom in
+        // Center the map on the retrieved coordinates
         org.osmdroid.api.IMapController mapController = map.getController();
         mapController.setZoom(17);  // Zoom level; adjust as necessary
         mapController.setCenter(new org.osmdroid.util.GeoPoint(29.5837859, -98.6267082));  // Latitude and Longitude
         fetchDirections("29.5856387,-98.6193095", "29.5842083, -98.6180271");
-
-
+        mapController.setZoom(17); // Adjust zoom level as needed
+        mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
+        map.setMultiTouchControls(true);
     }
+
 
     @Override
     public void onResume() {
@@ -111,8 +112,7 @@ public class Mapview extends AppCompatActivity {
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 permissionsToRequest.add(permission);
             }
         }
@@ -123,6 +123,7 @@ public class Mapview extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
 
     private void fetchDirections(String origin, String destination) {
         String apiKey = ""; // Replace with your Google API Key
@@ -200,3 +201,5 @@ public class Mapview extends AppCompatActivity {
 
 
 }
+
+
