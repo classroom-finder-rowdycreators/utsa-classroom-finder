@@ -92,7 +92,7 @@ public class LoginActivity extends ComponentActivity {
                 EditText pText = (EditText) findViewById(R.id.login_password_input);
                 int id = authenticate(uText.getText().toString(), pText.getText().toString());
                 if( id > 0 ){
-                    Intent intent = new Intent( LoginActivity.this, Mapview.class);
+                    Intent intent = new Intent( LoginActivity.this, MainActivity.class);
                     intent.putExtra("id",id);
                     startActivity(intent);
                 }
