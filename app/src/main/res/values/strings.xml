@@ -5,6 +5,30 @@
     <string name="login_title">UTSA Classroom Finder</string>
     <string name="login_button_text">Login</string>
     <string name="Register">Register A New Account</string>
+    <string name="login_title_WIP">Work In Progress</string>
+    <string name="WIP">WORK IN PROGRESS</string>
+    <string name="apNameLabel">NAME:</string>
+    <string name="apAgeLabel">AGE:</string>
+    <string name="apHeightLabel">HEIGHT:</string>
+    <string name="apWeightLabel">WEIGHT:</string>
+    <string name="road_runner_icon">Road Runner Icon</string>
+    <string name="picture_of_dumbbell">Picture of Dumbbell</string>
+    <string name="app_title">WORK IN PROGRESS</string>
+    <string name="workouts">WORKOUTS</string>
+    <string name="exercises">EXERCISES</string>
+    <string name="user_input_header">USER INPUT</string>
+    <string name="aRemailLabel" >EMAIL</string>
+    <string name="passwordLabel">PASSWORD</string>
+    <string name="create_account">Create Account</string>
+    <string name="add_workout">ADD XRCS</string>
+    <string name="edit_workout">EDIT XRCS</string>
+    <string name="delete_workout">DELETE XRCS</string>
+    <string name="exercise_name">EXERCISE NAME:</string>
+    <string name="rep_goal">REP GOAL:</string>
+    <string name="rep_actual">REP ACTUAL:</string>
+    <string name="weight_goal">WEIGHT GOAL:</string>
+    <string name="weight_actual">WEIGHT ACTUAL:</string>
+    <string name="workouts_button_value">Workouts</string>
 
 
 

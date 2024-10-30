@@ -83,7 +83,7 @@ public class LoginActivity extends ComponentActivity {
 
     private void setupButtons(){
         Button login_button = (Button) findViewById(R.id.login_button);
-        Button registerButton =(Button)findViewById(R.id.registerButton);
+        Button registerButton =(Button) findViewById(R.id.registerButton);
 
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,13 +106,13 @@ public class LoginActivity extends ComponentActivity {
             }
         });
 
-//        registerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
 
