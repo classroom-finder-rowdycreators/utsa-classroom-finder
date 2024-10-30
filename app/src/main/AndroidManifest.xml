@@ -31,12 +31,15 @@
             android:name=".loginPageActivity"
             android:exported="false" />
         <activity
+            android:name=".RegisterActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".Mapview"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false">
-
         </activity>
     </application>
 
