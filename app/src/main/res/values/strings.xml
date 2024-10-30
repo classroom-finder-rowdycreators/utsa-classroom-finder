@@ -6,6 +6,8 @@
     <string name="login_button_text">Login</string>
     <string name="Register">Register A New Account</string>
 
+    <!--experimenting time-->
+    <string name="type_schedule_prompt">Type Schedule Here</string>
 
 
 </resources>

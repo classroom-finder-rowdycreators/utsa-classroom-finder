@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the button to navigate to the Mapview
         Button nextscreen = findViewById(R.id.button);
+
         nextscreen.setOnClickListener(e -> {
             Intent intent = new Intent(this, Mapview.class);
             intent.putExtra("latitude", latitude);
@@ -76,10 +77,17 @@ public class MainActivity extends AppCompatActivity {
                     String locationName = "MH";
                     checkLogin.setLoggedIn(this, false);
                     Intent intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
+        Button test = findViewById(R.id.button2);
+                
 
+        test.setOnClickListener(
+                e->{
+
+                    Intent intent = new Intent(this, ScheduleUploaderActivity.class);
+                    startActivity(intent);
                 }
         );
+
     }
 
     private void fetchCurrentLocation() {
