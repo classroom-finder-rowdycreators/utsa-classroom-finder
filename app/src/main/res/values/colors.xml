@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="utsa_background">#0B233F</color>
+    <color name="utsa_orange">#F15A22</color>
 
 </resources>

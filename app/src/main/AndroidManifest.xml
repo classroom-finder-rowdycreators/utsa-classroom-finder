@@ -21,11 +21,14 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false">
-
         </activity>
         <activity
             android:name=".loginPageActivity"
             android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".Mapview"
             android:exported="false" />
@@ -37,7 +40,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 
