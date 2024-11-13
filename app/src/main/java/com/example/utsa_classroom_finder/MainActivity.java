@@ -3,7 +3,6 @@ package com.example.utsa_classroom_finder;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -18,7 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.utsa_classroom_finder.model.checkLogin;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -58,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Set up the button to navigate to the Mapview
+        // Set up the button to navigate to the MapviewActivity
         Button nextscreen = findViewById(R.id.button);
         nextscreen.setOnClickListener(e -> {
-            Intent intent = new Intent(this, Mapview.class);
+            Intent intent = new Intent(this, MapviewActivity.class);
             intent.putExtra("latitude", latitude);
             intent.putExtra("longitude", longitude);
             startActivity(intent);
