@@ -4,18 +4,12 @@ import static androidx.core.location.LocationManagerCompat.getCurrentLocation;
 
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import android.Manifest;
 import android.content.Context;
 
 import android.preference.PreferenceManager;
@@ -24,19 +18,12 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.example.utsa_classroom_finder.R;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -47,7 +34,7 @@ import org.osmdroid.views.overlay.Polyline;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mapview extends AppCompatActivity {
+public class MapviewActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
@@ -72,10 +59,11 @@ public class Mapview extends AppCompatActivity {
         // Center the map on the retrieved coordinates
         org.osmdroid.api.IMapController mapController = map.getController();
         mapController.setZoom(17);  // Zoom level; adjust as necessary
-        mapController.setCenter(new org.osmdroid.util.GeoPoint(29.5837859, -98.6267082));  // Latitude and Longitude
+        mapController.setCenter(new org.osmdroid.util.GeoPoint(29.5856387, -98.6193095));  // Latitude and Longitude
         fetchDirections("29.5856387,-98.6193095", "29.5842083, -98.6180271");
-        mapController.setZoom(17); // Adjust zoom level as needed
-        mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
+
+        //uncomment if not using physical device, the location would be google headquarters otherwise
+        //mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
         map.setMultiTouchControls(true);
     }
 
@@ -186,10 +174,11 @@ public class Mapview extends AppCompatActivity {
             GeoPoint p = new GeoPoint((double) (lat / 1E5), (double) (lng / 1E5));
             poly.add(p);
         }
+        Log.d("Polyline", poly.toString());
 
         return poly;
     }
-    private void drawPolyline(String encoded) {
+    public void drawPolyline(String encoded) {
         List<GeoPoint> points = decodePolyline(encoded);
         Polyline polyline = new Polyline();
         polyline.setPoints(points);
