@@ -33,7 +33,10 @@ android {
 
 dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation("com.android.volley:volley:1.2.1")
     //implementation (libs.osmbonuspack)
+    implementation ("androidx.security:security-crypto:1.1.0-alpha03")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)
