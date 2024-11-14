@@ -30,6 +30,8 @@
     <string name="weight_actual">WEIGHT ACTUAL:</string>
     <string name="workouts_button_value">Workouts</string>
 
+    <!--experimenting time-->
+    <string name="type_schedule_prompt">Type Schedule Here</string>
 
 
 </resources>
