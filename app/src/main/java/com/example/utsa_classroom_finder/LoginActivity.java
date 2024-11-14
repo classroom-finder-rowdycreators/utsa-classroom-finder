@@ -96,8 +96,10 @@ public class LoginActivity extends ComponentActivity {
                 EditText pText = findViewById(R.id.login_password_input);
                 int id = authenticate(uText.getText().toString(), pText.getText().toString());
                 if( id > 0 ){
+
                     checkLogin.setLoggedIn(context, true);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
                     intent.putExtra("id",id);
                     startActivity(intent);
                 }

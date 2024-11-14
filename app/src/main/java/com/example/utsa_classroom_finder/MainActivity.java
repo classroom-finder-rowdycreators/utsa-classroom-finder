@@ -18,7 +18,9 @@ import com.example.utsa_classroom_finder.model.checkLogin;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+
 public class MainActivity extends AppCompatActivity {
+
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private double latitude = 0.0;
@@ -72,10 +74,19 @@ public class MainActivity extends AppCompatActivity {
                     String locationName = "MH";
                     checkLogin.setLoggedIn(this, false);
                     Intent intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
 
+                });
+
+        Button addNewSchedule = findViewById(R.id.addNewSchedule);
+        addNewSchedule.setOnClickListener(
+                e -> {
+
+                    Intent intent2 = new Intent(this, ScheduleUploaderActivity.class);
+                    startActivity(intent2);
                 }
         );
+
+
     }
 
     private void fetchCurrentLocation() {
