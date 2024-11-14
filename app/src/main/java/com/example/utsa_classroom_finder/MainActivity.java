@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         Button back = findViewById(R.id.back);
         back.setOnClickListener(
                 e -> {
-                    //send intent tezxt to mapview with location name equal to MH
+                    //send intent text to mapview with location name equal to MH
                     String locationName = "MH";
                     checkLogin.setLoggedIn(this, false);
                     Intent intent = new Intent(this, LoginActivity.class);
@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
                 Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
-            } else {
+            }
+            else {
                 Log.e("Location", "Failed to retrieve location.");
             }
         });
@@ -101,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 fetchCurrentLocation(); // Fetch location after permission granted
-            } else {
+            }
+            else {
                 Log.e("Location", "Permission denied.");
             }
         }
