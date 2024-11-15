@@ -106,14 +106,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Load data from file
-        userClasses = UserClassDataManager.loadUserClasses(this);
-        if (userClasses == null) {
-            userClasses = new ArrayList<>();
-        }
-        buildingList = BuildingDataManager.loadBuildings(this);
-        if (buildingList == null) {
-            buildingList = new ArrayList<>();
-        }
+//        userClasses = UserClassDataManager.loadUserClasses(this);
+//        if (userClasses == null) {
+//            userClasses = new ArrayList<>();
+//        }
+//        buildingList = BuildingDataManager.loadBuildings(this);
+//        if (buildingList == null) {
+//            buildingList = new ArrayList<>();
+//        }
 
         try {
             buildings = SaveDataManager.loadBuildings(this);
