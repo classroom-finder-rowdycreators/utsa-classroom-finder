@@ -91,14 +91,16 @@ public class ScheduleUploaderActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                Log.d("Debug", "Buildings: " + buildings.toString());
-                Log.d("Debug", "User Classes: " + userClasses.toString());
-                Log.d("Debug", "Selected Building: " + selectedBuilding.toString());
 
                 if (selectedBuilding == null) {
                     selectedBuilding = new Building(buildingInput, "Main Campus", 4);
                     buildings.add(selectedBuilding);
                 }
+                Log.d("Debug", "Buildings: " + buildings.toString());
+                Log.d("Debug", "User Classes: " + userClasses.toString());
+                Log.d("Debug", "Selected Building: " + selectedBuilding);
+
+
                 selectedBuilding.getUserClasses().add(userClass);
 
 
@@ -124,6 +126,9 @@ public class ScheduleUploaderActivity extends AppCompatActivity {
 
 
                 Log.d("Debug", "Schedule Submitted and Saved");
+
+                Intent intent2 = new Intent(this, MainActivity.class);
+                startActivity(intent2);
             } else {
                 Log.d("Debug", "Please fill all fields.");
             }

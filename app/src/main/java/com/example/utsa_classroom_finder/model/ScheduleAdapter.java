@@ -20,12 +20,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
 
     private List<Building> userClassList;
 
-    // Constructor to initialize the userClassList
-    public ScheduleAdapter(List<Building> userClassList) {
+    // Constructor to initialize the buildingList
+    public ScheduleAdapter(List<Building> buildingList) {
         List<Building> validBuildings = new ArrayList<>();
 
         // Filter out invalid buildings (where userClasses is null or empty)
-        for (Building building : userClassList) {
+        for (Building building : buildingList) {
             if (building != null && building.getUserClasses() != null && !building.getUserClasses().isEmpty()) {
                 validBuildings.add(building);
             }
