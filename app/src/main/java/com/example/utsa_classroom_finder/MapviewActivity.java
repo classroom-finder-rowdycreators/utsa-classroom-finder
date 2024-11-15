@@ -60,7 +60,10 @@ public class MapviewActivity extends AppCompatActivity {
         org.osmdroid.api.IMapController mapController = map.getController();
         mapController.setZoom(17);  // Zoom level; adjust as necessary
         mapController.setCenter(new org.osmdroid.util.GeoPoint(29.5856387, -98.6193095));  // Latitude and Longitude
-        fetchDirections("29.5856387,-98.6193095", "29.5842083, -98.6180271");
+        //combine lat and long into one string
+        //String location = latitude + "," + longitude;
+
+        fetchDirections("29.5856387, -98.6193095", "29.5842083, -98.6180271");
 
         //uncomment if not using physical device, the location would be google headquarters otherwise
         //mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
@@ -114,7 +117,11 @@ public class MapviewActivity extends AppCompatActivity {
 
 
     private void fetchDirections(String origin, String destination) {
-        String apiKey = ""; // Replace with your Google API Key
+        /*
+
+         */
+
+        String apiKey =""; // Replace with your Google API Key
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&key=" + apiKey;
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -174,7 +181,7 @@ public class MapviewActivity extends AppCompatActivity {
             GeoPoint p = new GeoPoint((double) (lat / 1E5), (double) (lng / 1E5));
             poly.add(p);
         }
-        Log.d("Polyline", poly.toString());
+        //Log.d("Polyline", poly.toString());
 
         return poly;
     }

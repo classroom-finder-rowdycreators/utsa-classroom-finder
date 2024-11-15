@@ -93,7 +93,7 @@ public class ScheduleUploaderActivity extends AppCompatActivity {
                 }
                 Log.d("Debug", "Buildings: " + buildings.toString());
                 Log.d("Debug", "User Classes: " + userClasses.toString());
-                Log.d("Debug", "Selected Building: " + selectedBuilding.toString());
+                //Log.d("Debug", "Selected Building: " + selectedBuilding.toString());
 
                 if (selectedBuilding == null) {
                     selectedBuilding = new Building(buildingInput, "Main Campus", 4);
