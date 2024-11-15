@@ -1,5 +1,6 @@
 package com.example.utsa_classroom_finder.model;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Building implements Serializable {
@@ -7,12 +8,12 @@ public class Building implements Serializable {
     private String location;
     private int floors;
     private List<UserClass> userClasses;  // List to store the classes for this building
-
-    public Building(String name, String location, int floors, List<UserClass> userClasses) {
+//, List<UserClass> userClasses
+    public Building(String name, String location, int floors) {
         this.name = name;
         this.location = location;
         this.floors = floors;
-        this.userClasses = userClasses;
+
     }
 
     public String getName() {
@@ -40,6 +41,9 @@ public class Building implements Serializable {
     }
 
     public List<UserClass> getUserClasses() {
+        if (userClasses == null) {
+            userClasses = new ArrayList<>();
+        }
         return userClasses;
     }
 
@@ -53,7 +57,8 @@ public class Building implements Serializable {
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
                 ", floors=" + floors +
-                ", userClasses=" + userClasses +
                 '}';
     }
+
+
 }
