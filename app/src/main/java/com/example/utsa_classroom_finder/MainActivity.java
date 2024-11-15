@@ -13,10 +13,22 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.utsa_classroom_finder.model.Building;
+import com.example.utsa_classroom_finder.model.BuildingDataManager;
+import com.example.utsa_classroom_finder.model.SaveDataManager;
+import com.example.utsa_classroom_finder.model.ScheduleAdapter;
+import com.example.utsa_classroom_finder.model.UserClass;
+import com.example.utsa_classroom_finder.model.UserClassDataManager;
 import com.example.utsa_classroom_finder.model.checkLogin;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
     private double latitude = 0.0;
     private double longitude = 0.0;
+    private List<UserClass> userClasses = new ArrayList<>(); // List to store schedule data
+    private List<Building> buildingList = new ArrayList<>(); // List to store building data
+    private List<Building> buildings = new ArrayList<>();
+    private ScheduleAdapter scheduleAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
                     String locationName = "MH";
                     checkLogin.setLoggedIn(this, false);
                     Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
 
                 });
 
@@ -85,6 +104,36 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent2);
                 }
         );
+        //load data from file
+        userClasses = UserClassDataManager.loadUserClasses(this);
+        if (userClasses == null) {
+            userClasses = new ArrayList<>();
+        }
+        buildingList = BuildingDataManager.loadBuildings(this);
+        if (buildingList == null) {
+            buildingList = new ArrayList<>();
+        }
+
+        try {
+            buildings = SaveDataManager.loadBuildings(this);
+            if (buildings == null) {
+                buildings = new ArrayList<>();
+            }
+
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        scheduleAdapter = new ScheduleAdapter(buildings);
+        recyclerView.setAdapter(scheduleAdapter);
+
+
 
 
     }
@@ -117,4 +166,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }
