@@ -3,7 +3,9 @@ package com.example.utsa_classroom_finder;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 
@@ -24,12 +26,14 @@ import com.example.utsa_classroom_finder.model.UserClass;
 import com.example.utsa_classroom_finder.model.UserClassDataManager;
 import com.example.utsa_classroom_finder.model.checkLogin;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
-            fetchCurrentLocation();
+            requestLocationUpdates();
         }
 
         // Handle window insets for edge-to-edge display
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the button to navigate to the MapviewActivity
         Button nextscreen = findViewById(R.id.button);
         nextscreen.setOnClickListener(e -> {
+            Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
             Intent intent = new Intent(this, MapviewActivity.class);
             intent.putExtra("latitude", latitude);
             intent.putExtra("longitude", longitude);
@@ -85,26 +90,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button back = findViewById(R.id.back);
-        back.setOnClickListener(
-                e -> {
-                    //send intent tezxt to mapview with location name equal to MH
-                    String locationName = "MH";
-                    checkLogin.setLoggedIn(this, false);
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-
-                });
+        back.setOnClickListener(e -> {
+            //send intent text to mapview with location name equal to MH
+            String locationName = "MH";
+            checkLogin.setLoggedIn(this, false);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
         Button addNewSchedule = findViewById(R.id.addNewSchedule);
-        addNewSchedule.setOnClickListener(
-                e -> {
+        addNewSchedule.setOnClickListener(e -> {
+            Intent intent2 = new Intent(this, ScheduleUploaderActivity.class);
+            startActivity(intent2);
+        });
 
-                    Intent intent2 = new Intent(this, ScheduleUploaderActivity.class);
-                    startActivity(intent2);
-                }
-        );
-        //load data from file
+        // Load data from file
         userClasses = UserClassDataManager.loadUserClasses(this);
         if (userClasses == null) {
             userClasses = new ArrayList<>();
@@ -119,12 +120,7 @@ public class MainActivity extends AppCompatActivity {
             if (buildings == null) {
                 buildings = new ArrayList<>();
             }
-
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
@@ -132,40 +128,45 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         scheduleAdapter = new ScheduleAdapter(buildings);
         recyclerView.setAdapter(scheduleAdapter);
-
-
-
-
     }
 
-    private void fetchCurrentLocation() {
+    // Request location updates
+    private void requestLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e("Location", "Location permission not granted.");
             return;
         }
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-            if (location != null) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
-            } else {
-                Log.e("Location", "Failed to retrieve location.");
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000); // 10 seconds
+        locationRequest.setFastestInterval(5000); // 5 seconds
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Use GPS
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult != null && !locationResult.getLocations().isEmpty()) {
+                    Location location = locationResult.getLocations().get(0); // Get the most recent location
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+                } else {
+                    Log.e("Location", "Location result is empty.");
+                }
             }
-        });
+        }, Looper.getMainLooper());
     }
 
+    // Handle the location permission result
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fetchCurrentLocation(); // Fetch location after permission granted
+                requestLocationUpdates(); // Fetch location after permission granted
             } else {
                 Log.e("Location", "Permission denied.");
             }
         }
     }
-
-
 }

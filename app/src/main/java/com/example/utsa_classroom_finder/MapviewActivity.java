@@ -59,8 +59,10 @@ public class MapviewActivity extends AppCompatActivity {
         // Center the map on the retrieved coordinates
         org.osmdroid.api.IMapController mapController = map.getController();
         mapController.setZoom(17);  // Zoom level; adjust as necessary
-        mapController.setCenter(new org.osmdroid.util.GeoPoint(29.5856387, -98.6193095));  // Latitude and Longitude
-        fetchDirections("29.5856387,-98.6193095", "29.5842083, -98.6180271");
+        String location = latitude + "," + longitude;
+        Log.d("Location", location);
+        mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));  // Latitude and Longitude
+        fetchDirections(location, "29.5831102, -98.6185384");
 
         //uncomment if not using physical device, the location would be google headquarters otherwise
         //mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
@@ -114,8 +116,8 @@ public class MapviewActivity extends AppCompatActivity {
 
 
     private void fetchDirections(String origin, String destination) {
-        String apiKey = ""; // Replace with your Google API Key
-        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&key=" + apiKey;
+        String apiKey = "AIzaSyAHlwOmMeJD2OjPkhcGDicFwFzN_rWisGA"; // Replace with your Google API Key
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&mode=walking&key=" + apiKey;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -141,6 +143,7 @@ public class MapviewActivity extends AppCompatActivity {
                 JSONObject route = routes.getJSONObject(0);
                 String polyline = route.getJSONObject("overview_polyline").getString("points");
                 drawPolyline(polyline);
+                Log.d("Polyline", polyline);
             }
         } catch (JSONException e) {
             e.printStackTrace();
