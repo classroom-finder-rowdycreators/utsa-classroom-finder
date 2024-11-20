@@ -1,15 +1,21 @@
 package com.example.utsa_classroom_finder;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
@@ -19,17 +25,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.utsa_classroom_finder.model.Building;
-import com.example.utsa_classroom_finder.model.BuildingDataManager;
 import com.example.utsa_classroom_finder.model.SaveDataManager;
 import com.example.utsa_classroom_finder.model.ScheduleAdapter;
 import com.example.utsa_classroom_finder.model.UserClass;
-import com.example.utsa_classroom_finder.model.UserClassDataManager;
 import com.example.utsa_classroom_finder.model.checkLogin;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Show loading spinner until location is fetched
+        ProgressBar loadingSpinner = findViewById(R.id.loading_spinner);
+        loadingSpinner.setVisibility(View.VISIBLE); // Show spinner
+
         // Request location permission and get the current location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
@@ -78,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        /*
         // Set up the button to navigate to the MapviewActivity
         Button nextscreen = findViewById(R.id.button);
         nextscreen.setOnClickListener(e -> {
@@ -88,15 +96,12 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("longitude", longitude);
             startActivity(intent);
         });
+        */
 
-        Button back = findViewById(R.id.back);
-        back.setOnClickListener(e -> {
-            //send intent text to mapview with location name equal to MH
-            String locationName = "MH";
-            checkLogin.setLoggedIn(this, false);
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+        Button settings = findViewById(R.id.Settings);
+        settings.setOnClickListener(e -> {
+            Intent intent1 = new Intent(this, Settings.class);
+            startActivity(intent1);
         });
 
         Button addNewSchedule = findViewById(R.id.addNewSchedule);
@@ -106,15 +111,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Load data from file
-//        userClasses = UserClassDataManager.loadUserClasses(this);
-//        if (userClasses == null) {
-//            userClasses = new ArrayList<>();
-//        }
-//        buildingList = BuildingDataManager.loadBuildings(this);
-//        if (buildingList == null) {
-//            buildingList = new ArrayList<>();
-//        }
-
         try {
             buildings = SaveDataManager.loadBuildings(this);
             if (buildings == null) {
@@ -124,10 +120,18 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        scheduleAdapter = new ScheduleAdapter(buildings);
-        recyclerView.setAdapter(scheduleAdapter);
+        // Check if longitude and latitude are valid
+        if (longitude == 0.0 || latitude == 0.0) {
+            // Add a wait timer or retry logic to fetch valid coordinates
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                // Retry fetching coordinates or inform the user
+                requestLocationUpdates();
+                Log.e("Location", "Location coordinates not available.");
+            }, 500); // Wait for 1 second
+        } else {
+            // Proceed only if longitude and latitude are valid
+            initializeRecyclerView();
+        }
     }
 
     // Request location updates
@@ -150,11 +154,27 @@ public class MainActivity extends AppCompatActivity {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
                     Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+
+                    // Hide the loading spinner once the location is fetched
+                    ProgressBar loadingSpinner = findViewById(R.id.loading_spinner);
+                    loadingSpinner.setVisibility(View.GONE); // Hide spinner
+
+                    // Initialize RecyclerView after location is updated
+                    initializeRecyclerView();
                 } else {
                     Log.e("Location", "Location result is empty.");
                 }
             }
         }, Looper.getMainLooper());
+    }
+
+    // Method to initialize the RecyclerView
+    private void initializeRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        scheduleAdapter = new ScheduleAdapter(buildings, this, longitude, latitude);
+        recyclerView.setAdapter(scheduleAdapter);
+        Log.d("RecyclerView", "Initialized with updated location.");
     }
 
     // Handle the location permission result

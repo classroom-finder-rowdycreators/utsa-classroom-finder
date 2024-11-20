@@ -17,7 +17,7 @@
     <string name="workouts">WORKOUTS</string>
     <string name="exercises">EXERCISES</string>
     <string name="user_input_header">USER INPUT</string>
-    <string name="aRemailLabel" >EMAIL</string>
+    <string name="aRemailLabel">EMAIL</string>
     <string name="passwordLabel">PASSWORD</string>
     <string name="create_account">Create Account</string>
     <string name="add_workout">ADD XRCS</string>
@@ -32,6 +32,7 @@
 
     <!--experimenting time-->
     <string name="type_schedule_prompt">Type Schedule Here</string>
+    <string name="credits">Credits:\n</string>
 
 
 </resources>

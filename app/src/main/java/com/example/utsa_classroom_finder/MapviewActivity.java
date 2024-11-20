@@ -53,16 +53,22 @@ public class MapviewActivity extends AppCompatActivity {
         map.setTileSource(TileSourceFactory.MAPNIK);
 
         // Retrieve latitude and longitude from the intent
-        double latitude = getIntent().getDoubleExtra("latitude", 0.0);
-        double longitude = getIntent().getDoubleExtra("longitude", 0.0);
+        double latitude = getIntent().getDoubleExtra("currentLatitude", 0.0);
+        double longitude = getIntent().getDoubleExtra("currentLongitude", 0.0);
+        Log.d("Location", "Current Location: "+ latitude + "," + longitude);
+
+        double destinationLatitude = getIntent().getDoubleExtra("destinationLatitude", 0.0);
+        double destinationLongitude = getIntent().getDoubleExtra("destinationLongitude", 0.0);
+        Log.d("Destination", "Destination: "+ destinationLatitude + "," + destinationLongitude);
 
         // Center the map on the retrieved coordinates
         org.osmdroid.api.IMapController mapController = map.getController();
         mapController.setZoom(17);  // Zoom level; adjust as necessary
         String location = latitude + "," + longitude;
+        String destination = destinationLatitude + "," + destinationLongitude;
         Log.d("Location", location);
         mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));  // Latitude and Longitude
-        fetchDirections(location, "29.5831102, -98.6185384");
+        fetchDirections(location, destination);
 
         //uncomment if not using physical device, the location would be google headquarters otherwise
         //mapController.setCenter(new org.osmdroid.util.GeoPoint(latitude, longitude));
